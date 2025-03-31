@@ -1,0 +1,42 @@
+/**
+ * Detects repeated words (word echoes) in a text and returns them sorted alphabetically.
+ *
+ * @param {string} text The text to analyze
+ * @param {number} minLength Minimum word length to consider (default 4)
+ * @param {number} minOccurrences Minimum occurrences to count as an echo (default 2)
+ * @param {string} excludeWords Comma-separated list of words to exclude (optional)
+ * @return {string} Comma-separated list of echoed words with counts sorted alphabetically
+ *
+ * @customfunction
+ */
+function WORDECHOES(text, minLength = 4, minOccurrences = 2, excludeWords = "") {
+  if (!text || typeof text !== 'string') return "";
+
+  // Clean the text and convert to lowercase
+  const cleanText = text.toLowerCase().replace(/[^\w\s]/g, '');
+
+  // Split into words
+  const words = cleanText.split(/\s+/);
+
+  // Process exclusion list
+  const excludeSet = new Set(
+    excludeWords.toLowerCase().split(/,\s*/).filter(word => word)
+  );
+
+  // Count word occurrences
+  const wordCounts = {};
+  words.forEach(word => {
+    if (word.length >= minLength && !excludeSet.has(word)) {
+      wordCounts[word] = (wordCounts[word] || 0) + 1;
+    }
+  });
+
+  // Filter for words that appear at least minOccurrences times
+  const echoes = [];
+  for (const word in wordCounts) {
+    if (wordCounts[word] >= minOccurrences) {
+      echoes.push(`${word} (${wordCounts[word]})`);
+    }
+  }
+  return echoes.join(", ");
+}
